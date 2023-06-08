@@ -1,0 +1,24 @@
+:root {
+  --bg-color: #fff;
+
+}
+
+.App {
+  background-color: var(--bg-color);
+  min-height: 100vh;
+  display: block;
+}
+
+.header {
+  width: 100%;
+  border-bottom: 2px solid;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 15rem 1fr;
+}
+
+.sidebar {
+  height: calc(100vh - 152px);
+}
