@@ -2,11 +2,36 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from .models import Group, Event
-from .serializers import GroupSerializer, EventSerializer, GroupDetailSerializer, GroupListSerializer
+from .serializers import GroupSerializer, EventSerializer, GroupDetailSerializer, GroupListSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
+
+from rest_framework.decorators import permission_classes, api_view
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+import json
+from django.http import JsonResponse
 # Create your views here.
 
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+    
+        # ...
+
+        return token
+    
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+  
+
+    
 """ class GroupViewSet(ModelViewSet):
     serializer_class = GroupSerializer
     def get_queryset(self):
