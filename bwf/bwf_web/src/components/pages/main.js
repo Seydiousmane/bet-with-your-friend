@@ -1,14 +1,20 @@
 import React from 'react'
-import GroupList from './group_list'
+import GroupList from './Group_list'
 import { Route, Routes } from 'react-router-dom'
-import GroupDetail from './group_detail'
+import GroupDetail from './GroupDetail'
+import PrivateRoutes from '../utils/PrivateRoutes'
+
 
 const Main = () => {
   return (
     <div>
       <Routes>
         <Route path='/' element={<GroupList />} />
-        <Route path='/details/:id' element={<GroupDetail />} />
+
+        <Route element={<PrivateRoutes/>}>
+            <Route path='/details/:id' element={<GroupDetail />} />
+        </Route>
+        
       </Routes>
         
     </div>

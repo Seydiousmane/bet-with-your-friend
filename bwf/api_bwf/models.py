@@ -1,4 +1,5 @@
 from django.db import models, transaction
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -36,3 +37,16 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Member(models.Model):
+   
+    group = models.ForeignKey(Group, related_name='members', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='members_of', on_delete=models.CASCADE)
+    admin = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = (('user', 'group'))
+        index_together = (('user', 'group'))
+
+    def __str__(self):
+        return str(self.user)

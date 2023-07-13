@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from .models import Group, Event
-from .serializers import GroupSerializer, EventSerializer, GroupDetailSerializer, GroupListSerializer, UserSerializer
+from .models import Group, Event, Member
+from .serializers import GroupSerializer, EventSerializer, GroupDetailSerializer, GroupListSerializer, UserSerializer, MemberSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework import status
 
 from rest_framework.decorators import permission_classes, api_view
 
@@ -13,6 +14,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 import json
 from django.http import JsonResponse
+from django.contrib.auth.models import User
 # Create your views here.
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -73,4 +75,27 @@ class EventViewSet(MultipleSerializerMixin, ModelViewSet):
         group_id = self.request.GET.get('group_id')
         if group_id is not None:
             return queryset.filter(group_id=group_id)
-        return queryset   
+        return queryset
+    
+    
+class MemberViewSet(ModelViewSet):
+    queryset = Member.objects.all()
+    serializer_class = MemberSerializer
+        
+    @action(detail=False, methods=['post'])
+    def join(self, request):
+        if 'group' in request.data and 'user' in request.data:
+            try:
+                group = Group.objects.get(id=request.data['group'])
+                user = User.objects.get(id=request.data['user'])
+                member = Member.objects.create(user=user, group=group, admin=False)
+                serializer = MemberSerializer(member, many=False)
+                reponse = {'message': 'Joined group', 'results': serializer.data}
+
+                return Response(response, status=status.HTTP_200_OK)
+            except:
+                response = {'message': 'Cannot join'}
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            response = {'message': 'Wrong params'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
