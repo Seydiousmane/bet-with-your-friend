@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from api_bwf.urls import router_bwf
+
 from django.urls import path, include
 
 from api_bwf.views import MyTokenObtainPairView
@@ -29,5 +30,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/', include(router_bwf.urls))
+    path('api/', include(router_bwf.urls)),
 ]

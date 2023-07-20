@@ -103,7 +103,7 @@ function GroupDetail() {
         {
           datagroup.members?.map(member => {
             return (<div key={member.user.id}>
-              <p>{member.user.username} {member.point} pts</p>
+              <p>{member.user.username} {member.points} pts</p>
             </div>)
           })
         }

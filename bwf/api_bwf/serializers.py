@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
+from rest_framework.fields import CurrentUserDefault
 from .models import Group, Event, Member
 
 
@@ -16,7 +17,8 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    user = UserSerializer(many=False)
+    user = CurrentUserDefault()
+
     class Meta:
         model=Member
         fields=('user', 'group', 'admin')
@@ -41,7 +43,7 @@ class GroupDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Group
-        fields=['name', 'location', 'description', 'active', 'events', 'members']
+        fields=['id', 'name', 'location', 'description', 'active', 'events', 'members']
 
     def get_events(self, instance):
         queryset = instance.events.filter(active=True)
@@ -56,7 +58,7 @@ class GroupDetailSerializer(serializers.ModelSerializer):
             points = 0
             member_serialized = MemberSerializer(member, many=False)
             member_data = member_serialized.data
-            member_data['point'] = points
+            member_data['points'] = points
             people_points.append(member_data)
    
         return people_points
